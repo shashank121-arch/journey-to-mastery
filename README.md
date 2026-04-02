@@ -7,7 +7,7 @@ A premium, auto-compounding DeFi yield vault platform built on the **Stellar Sor
 ## 🚀 Live Demo & Documentation
 
 - **Live Demo:** [journey-to-mastery-one.vercel.app](https://journey-to-mastery-one.vercel.app/)
-- **Demo Video:** [Watch the 1-Minute Showcase](https://youtube.com/link-to-demo-video) *(Mock Link)*
+- **Demo Video:** [Watch the 1-Minute Showcase](https://www.loom.com/share/af44e6ae23724f859c0edaf792cf4a2d)
 - **GitHub Repository:** [shashank121-arch/journey-to-mastery](https://github.com/shashank121-arch/journey-to-mastery)
 
 ---

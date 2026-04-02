@@ -41,13 +41,13 @@ export default function DepositPage() {
       if (result) {
         toast.success(`Deposited ${numAmount} XLM successfully!`)
         toast.success(`Earned ${vaultTokenReward.toFixed(2)} VAULT tokens!`)
-        setAmount('')
         await refreshBalance()
+        setAmount('')
       } else {
         toast.error('Deposit failed — check contract connection')
       }
-    } catch (err) {
-      toast.error('Deposit transaction failed')
+    } catch (err: any) {
+      toast.error(err?.message || 'Deposit transaction failed')
       console.error(err)
     }
     setLoading(false)

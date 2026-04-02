@@ -58,15 +58,21 @@ export async function invokeContract(
     })
 
     const sourceKey = publicKey || DEFAULT_ACCOUNT
-    const account = await server.getAccount(sourceKey)
+    let account;
+    try {
+      account = await server.getAccount(sourceKey)
+    } catch (err) {
+      console.error('Failed to get account:', err)
+      throw new Error(`Account not found or network error. Is ${sourceKey} funded?`)
+    }
 
     const tx = new TransactionBuilder(account, {
       fee: BASE_FEE,
       networkPassphrase: Networks.TESTNET,
     })
       .addOperation(contract.call(method, ...scArgs))
-      .setTimeout(30)
-      .build()
+      .setTimeout(31) // Slightly longer timeout
+      .build() as any
 
     const simResult = await server.simulateTransaction(tx)
 
@@ -74,9 +80,8 @@ export async function invokeContract(
       console.error('Simulation error details:', {
         error: simResult.error,
         events: simResult.events,
-        result: (simResult as any).result
       })
-      return null
+      throw new Error(`Contract simulation failed: ${simResult.error}`)
     }
 
     if (readOnly) {
@@ -86,9 +91,7 @@ export async function invokeContract(
 
     if (signTransaction) {
       try {
-        // MUST assemble the transaction with simulation results (footprint, etc) before signing
-        const enrichedTx = rpc.assembleTransaction(tx, simResult as any)
-        
+        const enrichedTx = rpc.assembleTransaction(tx, simResult as any) as any
         const signedXdr = await signTransaction(enrichedTx.toXDR())
         const signedTx = TransactionBuilder.fromXDR(signedXdr, Networks.TESTNET)
         const submitResult = await server.sendTransaction(signedTx)
@@ -97,19 +100,21 @@ export async function invokeContract(
         if (status === 'success' || status === 'pending') {
           return submitResult
         } else {
-          console.error('Transaction submission failed:', submitResult)
-          return null
+          console.error('Full submission result:', submitResult)
+          const errorMsg = (submitResult as any).errorResultXdr || (submitResult as any).status || 'Unknown error'
+          throw new Error(`Transaction failed: ${errorMsg}`)
         }
-      } catch (signErr) {
-        console.error('Signing or submission error:', signErr)
-        return null
+      } catch (signErr: any) {
+        console.error('Sign/Submit detailed error:', signErr)
+        throw signErr
       }
     }
 
     return simResult
-  } catch (error) {
+  } catch (error: any) {
     console.error(`Contract call error [${method}]:`, error)
-    return null
+    // Throw error so caller catch block can show specific toast
+    throw error
   }
 }
 

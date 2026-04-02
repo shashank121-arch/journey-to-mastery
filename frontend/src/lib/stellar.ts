@@ -111,10 +111,11 @@ export async function invokeContract(
     }
 
     return simResult
-  } catch (error: any) {
-    console.error(`Contract call error [${method}]:`, error)
+  } catch (error) {
+    const err = error as Error
+    console.error(`Contract call error [${method}]:`, err)
     // Throw error so caller catch block can show specific toast
-    throw error
+    throw err
   }
 }
 

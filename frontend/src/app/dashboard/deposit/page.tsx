@@ -46,8 +46,9 @@ export default function DepositPage() {
       } else {
         toast.error('Deposit failed — check contract connection')
       }
-    } catch (err: any) {
-      toast.error(err?.message || 'Deposit transaction failed')
+    } catch (err: unknown) {
+      const error = err as Error
+      toast.error(error?.message || 'Deposit transaction failed')
       console.error(err)
     }
     setLoading(false)

@@ -69,8 +69,9 @@ export default function WithdrawPage() {
       } else {
         toast.error('Withdrawal failed — check contract connection')
       }
-    } catch (err: any) {
-      toast.error(err?.message || 'Withdrawal transaction failed')
+    } catch (err: unknown) {
+      const error = err as Error
+      toast.error(error?.message || 'Withdrawal transaction failed')
       console.error(err)
     }
     setLoading(false)

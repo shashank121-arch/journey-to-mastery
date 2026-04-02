@@ -1,0 +1,8 @@
+[workspace]
+members = [
+  "yield-vault",
+  "vault-token",
+  "price-oracle",
+  "rate-engine"
+]
+resolver = "2"

@@ -86,7 +86,10 @@ export async function invokeContract(
 
     if (signTransaction) {
       try {
-        const signedXdr = await signTransaction(tx.toXDR())
+        // MUST assemble the transaction with simulation results (footprint, etc) before signing
+        const enrichedTx = rpc.assembleTransaction(tx, simResult as any)
+        
+        const signedXdr = await signTransaction(enrichedTx.toXDR())
         const signedTx = TransactionBuilder.fromXDR(signedXdr, Networks.TESTNET)
         const submitResult = await server.sendTransaction(signedTx)
 

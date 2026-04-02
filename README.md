@@ -75,10 +75,10 @@ stellar contract deploy \
 
 | Contract | ID |
 |----------|-----|
-| YieldVault | `<paste after deploy>` |
-| VaultToken | `<paste after deploy>` |
-| PriceOracle | `<paste after deploy>` |
-| RateEngine | `<paste after deploy>` |
+| YieldVault | `CCN7QKSXZWEDT3MYZWRL2VP4GEAO5FMNI2X57VVEENLJNTV4UF3I5EVD` |
+| VaultToken | `CCWGGK2DF6RZH2NYL2JEDJNZWOPNBOUB3FMK6OWXORDID6JLTPOWM77I` |
+| PriceOracle | `CC5NVOICWKPJJDWEOUTOHRWVEU2IXS4EI6KQP6JO4CLOX5DSBBZGBRH4` |
+| RateEngine | `CB2XW2HQWPFW62SSKT2L3KAUP7NSIEPTII77YNRFOTMS7HVT4AF3LP76` |
 
 ## Level Requirements
 

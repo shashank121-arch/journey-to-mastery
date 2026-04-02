@@ -10,7 +10,7 @@ import { ArrowDownToLine, Coins, TrendingUp, AlertTriangle } from 'lucide-react'
 import { useEffect } from 'react'
 
 export default function DepositPage() {
-  const { publicKey, isConnected, xlmBalance, refreshBalance } = useWallet()
+  const { publicKey, isConnected, xlmBalance, refreshBalance, signTransaction } = useWallet()
   const [amount, setAmount] = useState('')
   const [loading, setLoading] = useState(false)
   const [apy, setApy] = useState(12.6)
@@ -37,7 +37,7 @@ export default function DepositPage() {
 
     setLoading(true)
     try {
-      const result = await depositToVault(publicKey, numAmount * 1e7)
+      const result = await depositToVault(publicKey, numAmount * 1e7, signTransaction)
       if (result) {
         toast.success(`Deposited ${numAmount} XLM successfully!`)
         toast.success(`Earned ${vaultTokenReward.toFixed(2)} VAULT tokens!`)

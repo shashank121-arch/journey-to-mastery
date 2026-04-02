@@ -28,7 +28,8 @@ export async function invokeContract(
   method: string,
   args: any[],
   publicKey?: string,
-  readOnly = false
+  readOnly = false,
+  signTransaction?: (xdr: string) => Promise<string>
 ): Promise<any> {
   try {
     if (!contractId) {
@@ -79,6 +80,21 @@ export async function invokeContract(
       return retval ? scValToNative(retval) : null
     }
 
+    if (signTransaction) {
+      const signedXdr = await signTransaction(tx.toXDR())
+      const signedTx = TransactionBuilder.fromXDR(signedXdr, Networks.TESTNET)
+      const submitResult = await server.sendTransaction(signedTx)
+
+      // Use string comparison with any cast to avoid SendTransactionStatus enum overlap errors in TS
+      const status = (submitResult as any).status?.toLowerCase()
+      if (status === 'success' || status === 'pending') {
+        return submitResult
+      } else {
+        console.error('Transaction failed:', submitResult)
+        return null
+      }
+    }
+
     return simResult
   } catch (error) {
     console.error(`Contract call error [${method}]:`, error)
@@ -96,12 +112,12 @@ export async function getUserPosition(publicKey: string) {
   return invokeContract(CONTRACTS.yieldVault, 'get_position', [publicKey], publicKey, true)
 }
 
-export async function depositToVault(publicKey: string, amount: number) {
-  return invokeContract(CONTRACTS.yieldVault, 'deposit', [publicKey, amount], publicKey)
+export async function depositToVault(publicKey: string, amount: number, signTransaction?: (xdr: string) => Promise<string>) {
+  return invokeContract(CONTRACTS.yieldVault, 'deposit', [publicKey, amount], publicKey, false, signTransaction)
 }
 
-export async function withdrawFromVault(publicKey: string, shareAmount: number) {
-  return invokeContract(CONTRACTS.yieldVault, 'withdraw', [publicKey, shareAmount], publicKey)
+export async function withdrawFromVault(publicKey: string, shareAmount: number, signTransaction?: (xdr: string) => Promise<string>) {
+  return invokeContract(CONTRACTS.yieldVault, 'withdraw', [publicKey, shareAmount], publicKey, false, signTransaction)
 }
 
 export async function getSharePrice(): Promise<number> {

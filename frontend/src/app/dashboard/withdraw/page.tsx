@@ -9,7 +9,7 @@ import { toast } from 'sonner'
 import { ArrowUpFromLine, AlertTriangle, Info } from 'lucide-react'
 
 export default function WithdrawPage() {
-  const { publicKey, isConnected, refreshBalance } = useWallet()
+  const { publicKey, isConnected, refreshBalance, signTransaction } = useWallet()
   const [amount, setAmount] = useState('')
   const [loading, setLoading] = useState(false)
   const [userShares, setUserShares] = useState(0)
@@ -31,9 +31,9 @@ export default function WithdrawPage() {
         setSharePrice(sp)
       } catch {
         // Mock fallback
-        setUserShares(150.5)
-        setUserDeposited(145.0)
-        setSharePrice(1.034)
+        setUserShares(0) // Default to 0 instead of mock for real testing
+        setUserDeposited(0)
+        setSharePrice(1.0)
       }
     }
     load()
@@ -56,7 +56,7 @@ export default function WithdrawPage() {
 
     setLoading(true)
     try {
-      const result = await withdrawFromVault(publicKey, numAmount * 1e7)
+      const result = await withdrawFromVault(publicKey, numAmount * 1e7, signTransaction)
       if (result) {
         toast.success(`Withdrew ${xlmToReceive.toFixed(4)} XLM successfully!`)
         setAmount('')

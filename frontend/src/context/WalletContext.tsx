@@ -3,6 +3,7 @@ import {
   createContext, useContext,
   useState, useEffect, useCallback
 } from 'react'
+import { Networks } from '@stellar/stellar-sdk'
 
 interface WalletState {
   publicKey: string | null
@@ -18,6 +19,7 @@ interface WalletContextType extends WalletState {
   connectAlbedo: () => Promise<void>
   disconnect: () => void
   refreshBalance: () => Promise<void>
+  signTransaction: (xdr: string) => Promise<string>
 }
 
 const WalletContext = createContext<WalletContextType>(
@@ -142,6 +144,25 @@ export function WalletProvider({ children }: {
     setState(s => ({ ...s, xlmBalance: xlm }))
   }, [state.publicKey])
 
+  const signTransaction = useCallback(async (xdr: string) => {
+    if (!state.walletType) throw new Error('Wallet not connected')
+
+    if (state.walletType === 'freighter') {
+      const freighterApi = await import('@stellar/freighter-api')
+      const result = await freighterApi.signTransaction(xdr, { 
+        networkPassphrase: Networks.TESTNET 
+      })
+      if (typeof result === 'string') return result
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if ((result as any).signedTxXdr) return (result as any).signedTxXdr
+      throw new Error('Failed to sign transaction')
+    } else {
+      const albedo = (await import('@albedo-link/intent')).default
+      const result = await albedo.tx({ xdr, network: 'testnet' })
+      return result.signed_envelope_xdr
+    }
+  }, [state.walletType])
+
   useEffect(() => {
     const key = localStorage.getItem('sv_wallet_key')
     const type_ = localStorage.getItem('sv_wallet_type')
@@ -166,6 +187,7 @@ export function WalletProvider({ children }: {
       connectAlbedo,
       disconnect,
       refreshBalance,
+      signTransaction,
     }}>
       {children}
     </WalletContext.Provider>

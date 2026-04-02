@@ -67,7 +67,7 @@ export async function invokeContract(
     }
 
     const tx = new TransactionBuilder(account, {
-      fee: BASE_FEE,
+      fee: '100000',
       networkPassphrase: Networks.TESTNET,
     })
       .addOperation(contract.call(method, ...scArgs))
@@ -109,8 +109,8 @@ export async function invokeContract(
         if (status === 'success' || status === 'pending') {
           return submitResult
         } else {
-          console.error('Full submission result:', submitResult)
-          const errorMsg = (submitResult as any).errorResultXdr || (submitResult as any).status || 'Unknown error'
+          console.error('Full submission result:', JSON.stringify(submitResult, null, 2))
+          const errorMsg = (submitResult as any).errorResultXdr || (submitResult as any).error || (submitResult as any).status || 'Unknown error'
           throw new Error(`Transaction failed: ${errorMsg}`)
         }
       } catch (signErr: any) {

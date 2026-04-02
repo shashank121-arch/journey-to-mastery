@@ -39,8 +39,13 @@ export async function invokeContract(
     const contract = new Contract(contractId)
 
     const scArgs = args.map(arg => {
+      // Check if arg is a valid Stellar Address string
       if (typeof arg === 'string' && arg.startsWith('G') && arg.length === 56) {
-        return nativeToScVal(Address.fromString(arg), { type: 'address' })
+        try {
+          return nativeToScVal(Address.fromString(arg), { type: 'address' })
+        } catch (e) {
+          console.warn('Invalid address in args, returning raw scVal', e)
+        }
       }
       if (typeof arg === 'number' || typeof arg === 'bigint') {
         return nativeToScVal(BigInt(arg), { type: 'i128' })

@@ -27,6 +27,9 @@ const WalletContext = createContext<WalletContextType>(
 const HORIZON = 'https://horizon-testnet.stellar.org'
 
 async function fetchBalances(publicKey: string) {
+  if (!publicKey || typeof publicKey !== 'string' || !publicKey.startsWith('G')) {
+    return { xlm: 0 }
+  }
   try {
     const res = await fetch(`${HORIZON}/accounts/${publicKey}`)
     if (!res.ok) return { xlm: 0 }
@@ -65,8 +68,16 @@ export function WalletProvider({ children }: {
         return
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const publicKey = await (freighterApi as any).requestAccess()
+      // Fix for some versions of Freighter return
+      let publicKey = await (freighterApi as any).requestAccess()
+      if (publicKey && typeof publicKey === 'object') {
+        publicKey = publicKey.address || publicKey.publicKey || publicKey.id || JSON.stringify(publicKey)
+      }
+
+      if (typeof publicKey !== 'string') {
+        throw new Error('Invalid public key received from wallet')
+      }
+
       const { xlm } = await fetchBalances(publicKey)
 
       setState({

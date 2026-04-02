@@ -10,8 +10,10 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [walletModal, setWalletModal] = useState(false)
 
-  const truncateKey = (key: string) =>
-    `${key.slice(0, 4)}...${key.slice(-4)}`
+  const truncateKey = (key: string | null) => {
+    if (!key || typeof key !== 'string') return '...'
+    return `${key.slice(0, 4)}...${key.slice(-4)}`
+  }
 
   const copyAddress = () => {
     if (publicKey) {

@@ -14,7 +14,7 @@ A premium, auto-compounding DeFi yield vault platform built on the **Stellar Sor
 
 ## 🛠️ Tech Stack & Architecture
 
-- **Smart Contracts:** Rust + Soroban SDK v20.0.0
+- **Smart Contracts:** Rust + Soroban SDK v21.0.0
 - **Frontend:** Next.js 14 + Tailwind CSS + Framer Motion
 - **Wallet Integration:** @stellar/freighter-api + Albedo SDK
 - **CI/CD:** GitHub Actions (Contract Tests, Build, Vercel Deploy)

@@ -71,7 +71,11 @@ export async function invokeContract(
     const simResult = await server.simulateTransaction(tx)
 
     if (rpc.Api.isSimulationError(simResult)) {
-      console.error('Simulation error:', simResult)
+      console.error('Simulation error details:', {
+        error: simResult.error,
+        events: simResult.events,
+        result: (simResult as any).result
+      })
       return null
     }
 
@@ -81,16 +85,20 @@ export async function invokeContract(
     }
 
     if (signTransaction) {
-      const signedXdr = await signTransaction(tx.toXDR())
-      const signedTx = TransactionBuilder.fromXDR(signedXdr, Networks.TESTNET)
-      const submitResult = await server.sendTransaction(signedTx)
+      try {
+        const signedXdr = await signTransaction(tx.toXDR())
+        const signedTx = TransactionBuilder.fromXDR(signedXdr, Networks.TESTNET)
+        const submitResult = await server.sendTransaction(signedTx)
 
-      // Use string comparison with any cast to avoid SendTransactionStatus enum overlap errors in TS
-      const status = (submitResult as any).status?.toLowerCase()
-      if (status === 'success' || status === 'pending') {
-        return submitResult
-      } else {
-        console.error('Transaction failed:', submitResult)
+        const status = (submitResult as any).status?.toLowerCase()
+        if (status === 'success' || status === 'pending') {
+          return submitResult
+        } else {
+          console.error('Transaction submission failed:', submitResult)
+          return null
+        }
+      } catch (signErr) {
+        console.error('Signing or submission error:', signErr)
         return null
       }
     }

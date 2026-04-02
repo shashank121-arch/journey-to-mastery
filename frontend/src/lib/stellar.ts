@@ -3,7 +3,6 @@ import {
   Contract,
   Networks,
   TransactionBuilder,
-  BASE_FEE,
   rpc,
   scValToNative,
   nativeToScVal,

@@ -91,8 +91,17 @@ export async function invokeContract(
 
     if (signTransaction) {
       try {
-        const enrichedTx = rpc.assembleTransaction(tx, simResult as any) as any
-        const signedXdr = await signTransaction(enrichedTx.toXDR())
+        let xdrToSign;
+        try {
+          const enrichedTx = rpc.assembleTransaction(tx, simResult as any)
+          console.log('Enriched transaction type:', typeof enrichedTx, !!(enrichedTx as any)?.toXDR)
+          xdrToSign = (enrichedTx as any)?.toXDR ? (enrichedTx as any).toXDR() : tx.toXDR()
+        } catch (assembleErr) {
+          console.warn('Assemble failed, falling back to original TX:', assembleErr)
+          xdrToSign = tx.toXDR()
+        }
+
+        const signedXdr = await signTransaction(xdrToSign)
         const signedTx = TransactionBuilder.fromXDR(signedXdr, Networks.TESTNET)
         const submitResult = await server.sendTransaction(signedTx)
 

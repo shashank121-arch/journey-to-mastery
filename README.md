@@ -50,16 +50,46 @@ A premium, auto-compounding DeFi yield vault platform built on the **Stellar Sor
 
 ---
 
-## 🛡️ Smart Contract Details (Stellar Testnet)
+## 🛡️ Deployed Smart Contracts (Stellar Testnet)
 
-| Contract | Address / Asset ID | Verified Explorer Link |
-|----------|--------------------|------------------------|
-| **YieldVault** | `CCN7QKSXZWEDT3MYZWRL2VP4GEAO5FMNI2X57VVEENLJNTV4UF3I5EVD` | [View on Stellar.Expert](https://stellar.expert/explorer/testnet/contract/CCN7QKSXZWEDT3MYZWRL2VP4GEAO5FMNI2X57VVEENLJNTV4UF3I5EVD) |
-| **VaultToken** | `CCWGGK2DF6RZH2NYL2JEDJNZWOPNBOUB3FMK6OWXORDID6JLTPOWM77I` | [View on Stellar.Expert](https://stellar.expert/explorer/testnet/contract/CCWGGK2DF6RZH2NYL2JEDJNZWOPNBOUB3FMK6OWXORDID6JLTPOWM77I) |
-| **PriceOracle** | `CC5NVOICWKPJJDWEOUTOHRWVEU2IXS4EI6KQP6JO4CLOX5DSBBZGBRH4` | [View on Stellar.Expert](https://stellar.expert/explorer/testnet/contract/CC5NVOICWKPJJDWEOUTOHRWVEU2IXS4EI6KQP6JO4CLOX5DSBBZGBRH4) |
-| **RateEngine** | `CB2XW2HQWPFW62SSKT2L3KAUP7NSIEPTII77YNRFOTMS7HVT4AF3LP76` | [View on Stellar.Expert](https://stellar.expert/explorer/testnet/contract/CB2XW2HQWPFW62SSKT2L3KAUP7NSIEPTII77YNRFOTMS7HVT4AF3LP76) |
+### Contract Addresses
 
-**Recent Transaction Hash (Success):** `8fbd379a-e212-4c61-b3bf-0dfa4bf07aad` *(Verifiable on Testnet)*
+| Contract | Address | Explorer |
+|----------|---------|----------|
+| **YieldVault** (Core) | `CCN7QKSXZWEDT3MYZWRL2VP4GEAO5FMNI2X57VVEENLJNTV4UF3I5EVD` | [View](https://stellar.expert/explorer/testnet/contract/CCN7QKSXZWEDT3MYZWRL2VP4GEAO5FMNI2X57VVEENLJNTV4UF3I5EVD) |
+| **VaultToken** (VAULT) | `CCWGGK2DF6RZH2NYL2JEDJNZWOPNBOUB3FMK6OWXORDID6JLTPOWM77I` | [View](https://stellar.expert/explorer/testnet/contract/CCWGGK2DF6RZH2NYL2JEDJNZWOPNBOUB3FMK6OWXORDID6JLTPOWM77I) |
+| **PriceOracle** | `CC5NVOICWKPJJDWEOUTOHRWVEU2IXS4EI6KQP6JO4CLOX5DSBBZGBRH4` | [View](https://stellar.expert/explorer/testnet/contract/CC5NVOICWKPJJDWEOUTOHRWVEU2IXS4EI6KQP6JO4CLOX5DSBBZGBRH4) |
+| **RateEngine** | `CB2XW2HQWPFW62SSKT2L3KAUP7NSIEPTII77YNRFOTMS7HVT4AF3LP76` | [View](https://stellar.expert/explorer/testnet/contract/CB2XW2HQWPFW62SSKT2L3KAUP7NSIEPTII77YNRFOTMS7HVT4AF3LP76) |
+
+---
+
+### 🪙 Custom Token — VAULT Token
+
+- **Token Name:** VAULT (Vault Governance Token)
+- **Contract Address:** `CCWGGK2DF6RZH2NYL2JEDJNZWOPNBOUB3FMK6OWXORDID6JLTPOWM77I`
+- **Explorer:** [View VaultToken on Stellar.Expert](https://stellar.expert/explorer/testnet/contract/CCWGGK2DF6RZH2NYL2JEDJNZWOPNBOUB3FMK6OWXORDID6JLTPOWM77I)
+- **Standard:** SEP-41 (Stellar Token Interface)
+- **Usage:** Minted as governance rewards on every XLM deposit (1 VAULT per 10 XLM)
+
+---
+
+### 🔗 Inter-Contract Calls
+
+The `YieldVault` contract makes **two inter-contract calls** on every `deposit` and `withdraw` via `env.invoke_contract`:
+
+1. **YieldVault → PriceOracle:** Calls `get_price("XLM")` to fetch the live XLM/USD price before processing deposits.
+2. **YieldVault → RateEngine:** Calls `get_borrow_rate(total_deposits, utilization)` to compute the dynamic APY on each interaction.
+
+**Verified Deployment Transaction Hashes (Stellar Testnet):**
+
+| Description | Transaction Hash | Explorer |
+|-------------|-----------------|----------|
+| Contract Deployment & Init | `c89c9e1dc73f17b66d2c4fbb2163e299408701ed241b18827c2a19fb443b2abe` | [View](https://stellar.expert/explorer/testnet/tx/c89c9e1dc73f17b66d2c4fbb2163e299408701ed241b18827c2a19fb443b2abe) |
+| Inter-contract call (deposit) | `6c722393fb08862b4fe9f058463abbecf87cffced7e3d818adc176966e3249f9` | [View](https://stellar.expert/explorer/testnet/tx/6c722393fb08862b4fe9f058463abbecf87cffced7e3d818adc176966e3249f9) |
+| Inter-contract call (oracle) | `9c41c025163860656f488696b3dead2d873b2a0860520539253c97eadfd711a1` | [View](https://stellar.expert/explorer/testnet/tx/9c41c025163860656f488696b3dead2d873b2a0860520539253c97eadfd711a1) |
+| Inter-contract call (rate engine) | `037ce1fbb0541204d918282edac4be1f198e8ade7362fc877d8685ec4f22b38a` | [View](https://stellar.expert/explorer/testnet/tx/037ce1fbb0541204d918282edac4be1f198e8ade7362fc877d8685ec4f22b38a) |
+
+All transactions are verifiable on the [Stellar Testnet Explorer](https://stellar.expert/explorer/testnet).
 
 ---
 

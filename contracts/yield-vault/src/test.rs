@@ -8,23 +8,23 @@ use soroban_sdk::{testutils::Address as _, Address, Env, String};
 
 mod price_oracle {
     soroban_sdk::contractimport!(
-        file = "../price-oracle/target/wasm32-unknown-unknown/release/price_oracle.wasm"
+        file = "../target/wasm32-unknown-unknown/release/price_oracle.wasm"
     );
 }
 
 mod rate_engine {
     soroban_sdk::contractimport!(
-        file = "../rate-engine/target/wasm32-unknown-unknown/release/rate_engine.wasm"
+        file = "../target/wasm32-unknown-unknown/release/rate_engine.wasm"
     );
 }
 
 mod vault_token {
     soroban_sdk::contractimport!(
-        file = "../vault-token/target/wasm32-unknown-unknown/release/vault_token.wasm"
+        file = "../target/wasm32-unknown-unknown/release/vault_token.wasm"
     );
 }
 
-fn setup() -> (Env, Address, Address, Address, Address, YieldVaultClient) {
+fn setup() -> (Env, Address, Address, Address, Address, YieldVaultClient<'static>) {
     let env = Env::default();
     env.mock_all_auths();
 
@@ -66,7 +66,7 @@ fn setup() -> (Env, Address, Address, Address, Address, YieldVaultClient) {
 
 // --- Standalone tests (no inter-contract WASM needed) ---
 
-fn setup_standalone() -> (Env, Address, YieldVaultClient) {
+fn setup_standalone() -> (Env, Address, YieldVaultClient<'static>) {
     let env = Env::default();
     env.mock_all_auths();
 

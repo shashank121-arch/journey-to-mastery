@@ -3,7 +3,7 @@
 use super::*;
 use soroban_sdk::{testutils::Address as _, Address, Env, String};
 
-fn setup_test() -> (Env, Address, VaultTokenClient) {
+fn setup_test() -> (Env, Address, VaultTokenClient<'static>) {
     let env = Env::default();
     env.mock_all_auths();
     let contract_id = env.register_contract(None, VaultToken);

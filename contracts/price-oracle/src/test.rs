@@ -3,7 +3,7 @@
 use super::*;
 use soroban_sdk::{testutils::Address as _, Address, Env, Map, String, Vec};
 
-fn setup() -> (Env, Address, PriceOracleClient) {
+fn setup() -> (Env, Address, PriceOracleClient<'static>) {
     let env = Env::default();
     env.mock_all_auths();
     let id = env.register_contract(None, PriceOracle);

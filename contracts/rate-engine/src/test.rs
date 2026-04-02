@@ -3,7 +3,7 @@
 use super::*;
 use soroban_sdk::Env;
 
-fn setup() -> (Env, RateEngineClient) {
+fn setup() -> (Env, RateEngineClient<'static>) {
     let env = Env::default();
     env.mock_all_auths();
     let id = env.register_contract(None, RateEngine);

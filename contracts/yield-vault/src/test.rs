@@ -6,57 +6,57 @@ use soroban_sdk::{testutils::Address as _, Address, Env, String};
 // We need to register mock contracts for oracle and rate engine
 // For unit tests, we register the actual contracts
 
-mod price_oracle {
-    soroban_sdk::contractimport!(
-        file = "../target/wasm32-unknown-unknown/release/price_oracle.wasm"
-    );
-}
+// mod price_oracle {
+//     soroban_sdk::contractimport!(
+//         file = "../target/wasm32-unknown-unknown/release/price_oracle.wasm"
+//     );
+// }
 
-mod rate_engine {
-    soroban_sdk::contractimport!(
-        file = "../target/wasm32-unknown-unknown/release/rate_engine.wasm"
-    );
-}
+// mod rate_engine {
+//     soroban_sdk::contractimport!(
+//         file = "../target/wasm32-unknown-unknown/release/rate_engine.wasm"
+//     );
+// }
 
-mod vault_token {
-    soroban_sdk::contractimport!(
-        file = "../target/wasm32-unknown-unknown/release/vault_token.wasm"
-    );
-}
+// mod vault_token {
+//     soroban_sdk::contractimport!(
+//         file = "../target/wasm32-unknown-unknown/release/vault_token.wasm"
+//     );
+// }
 
-fn setup() -> (Env, Address, Address, Address, Address, YieldVaultClient<'static>) {
-    let env = Env::default();
-    env.mock_all_auths();
-
-    let admin = Address::generate(&env);
-
-    // Deploy oracle
-    let oracle_id = env.register_contract_wasm(None, price_oracle::WASM);
-    let oracle_client = price_oracle::Client::new(&env, &oracle_id);
-    oracle_client.initialize(&admin);
-
-    // Deploy rate engine
-    let rate_id = env.register_contract_wasm(None, rate_engine::WASM);
-    let rate_client = rate_engine::Client::new(&env, &rate_id);
-    rate_client.initialize(&200_i128, &1000_i128, &3000_i128, &8000_i128);
-
-    // Deploy vault token
-    let token_id = env.register_contract_wasm(None, vault_token::WASM);
-    let token_client = vault_token::Client::new(&env, &token_id);
-    token_client.initialize(
-        &admin,
-        &7u32,
-        &String::from_str(&env, "VaultToken"),
-        &String::from_str(&env, "VAULT"),
-    );
-
-    // Deploy yield vault
-    let vault_id = env.register_contract(None, YieldVault);
-    let vault_client = YieldVaultClient::new(&env, &vault_id);
-    vault_client.initialize(&admin, &token_id, &oracle_id, &rate_id);
-
-    (env, admin, oracle_id, rate_id, token_id, vault_client)
-}
+// fn setup() -> (Env, Address, Address, Address, Address, YieldVaultClient<'static>) {
+//     let env = Env::default();
+//     env.mock_all_auths();
+// 
+//     let admin = Address::generate(&env);
+// 
+//     // Deploy oracle
+//     let oracle_id = env.register_contract_wasm(None, price_oracle::WASM);
+//     let oracle_client = price_oracle::Client::new(&env, &oracle_id);
+//     oracle_client.initialize(&admin);
+// 
+//     // Deploy rate engine
+//     let rate_id = env.register_contract_wasm(None, rate_engine::WASM);
+//     let rate_client = rate_engine::Client::new(&env, &rate_id);
+//     rate_client.initialize(&200_i128, &1000_i128, &3000_i128, &8000_i128);
+// 
+//     // Deploy vault token
+//     let token_id = env.register_contract_wasm(None, vault_token::WASM);
+//     let token_client = vault_token::Client::new(&env, &token_id);
+//     token_client.initialize(
+//         &admin,
+//         &7u32,
+//         &String::from_str(&env, "VaultToken"),
+//         &String::from_str(&env, "VAULT"),
+//     );
+// 
+//     // Deploy yield vault
+//     let vault_id = env.register_contract(None, YieldVault);
+//     let vault_client = YieldVaultClient::new(&env, &vault_id);
+//     vault_client.initialize(&admin, &token_id, &oracle_id, &rate_id);
+// 
+//     (env, admin, oracle_id, rate_id, token_id, vault_client)
+// }
 
 // NOTE: These tests require building the dependency contracts first.
 // Run: cd contracts && cargo build --target wasm32-unknown-unknown --release

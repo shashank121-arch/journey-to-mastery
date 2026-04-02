@@ -69,6 +69,7 @@ export function WalletProvider({ children }: {
       }
 
       // Fix for some versions of Freighter return
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let publicKey = await (freighterApi as any).requestAccess()
       if (publicKey && typeof publicKey === 'object') {
         publicKey = publicKey.address || publicKey.publicKey || publicKey.id || JSON.stringify(publicKey)
